@@ -17,12 +17,15 @@ Members:
 - Each meeting will have an agenda.
     - This agenda will have a basic structure that most meetings will follow, but things may be added to each meeting’s agenda such as points about conflict resolution.
     - The agenda will also contain members present, as well as date, time, decisions made and artefacts worked on during the meeting.
+	- Any decisions made during the meeting will be recorded in their own section in the agenda
+	- Any work products produced or further developed will be recorded in their own section in the agenda
 - `Trello` will be used to show what each team member is working on, what each team member has worked on, what should be achieved during each sprint and to show our total progress on the project. 
 ### Communication plan
 - The two main tools which we will use to communicate aside from personal meetings will be `Slack` and `Discord`.
     - Discord has voice chat functionality which can be very useful incase a team member is incapable of being physically present during a meeting but still wants to participate. 
 - Most of our communication will occur during the meetings or over slack while discord will be used to assist with meetings.  
-- We will use a modified version of stand- up meetings by creating a `Slack` thread at *17:00 every day except Sunday*.
+- We will use a modified version of stand- up meetings by creating a `Slack` thread at *17:00 every day except Saturday*.
+	- The reason Sunday is included so that members can have the liberty of working over the weekend and recapping over it in case they fell behind on work for that week.
     - All team members will then be expected to respond to said message with a description of what they have done that day to progress the project, difficulties they faced and plans for next day.
     - Content of all stand- up meetings will be stored in a separate document, sorted by date.
 ### Standard
