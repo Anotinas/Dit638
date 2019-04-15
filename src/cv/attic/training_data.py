@@ -19,9 +19,9 @@ for i in os.listdir(POSTITIVE):
     except Exception as e:
         print(str(e))
 
-def processPositivePics():
+#def processPositivePics():
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     #TODO
 
     
