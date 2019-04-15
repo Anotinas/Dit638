@@ -1,2 +1,8 @@
 #Local dependencies
 *.idea/
+
+#OS specific
+.DS_Store
+
+#Python
+*.pyc
