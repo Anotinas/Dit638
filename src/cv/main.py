@@ -6,6 +6,10 @@ import cv2
 sys.path.insert(0, './scripts/')
 import recognition as recog
 
+"""
+Trained Stop Sign classifier taken from:
+https://github.com/cfizette/road-sign-cascades
+"""
 stopSignCascadePath = "%s/classifiers/Stopsign_HAAR_19Stages.xml"%(os.getcwd())
 
 #Main PI loop
