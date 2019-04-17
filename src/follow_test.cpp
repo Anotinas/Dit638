@@ -44,11 +44,12 @@ int32_t main(int32_t argc, char **argv) {
         
         //enables additional debug info if specified in command line
         const bool VERBOSE{commandlineArguments.count("verbose") != 0};
+        
+        //frequency of sending the pedal commands, hardcoded to 15 Hz
+        //if you are mathematically illiterate like me, 15hz = 15 executions per second
+        const float FREQ{15};
 
-        //sets specific frequency of something
-        //TODO check what something is LUL
-        const float FREQ{(commandlineArguments["freq"].size() != 0) ? static_cast<float>(std::stof(commandlineArguments["freq"])) : static_cast<float>(-1.0)};
-
+        //float value that stores the reading from the distance reading function
         float distanceReading{0.0};
         
         //function keeps reading the distance reading and stores it in a variable
@@ -56,9 +57,6 @@ int32_t main(int32_t argc, char **argv) {
         {
             [VERBOSE, &distanceReading](cluon::data::Envelope &&envelope)
             {
-                //defines how close to an object the car must be to stop
-                const float PROXIMITY_LIMIT = 6.0;
-
                 //auto is necessary because each message is it's own type
                 //could put proxy as the superclass instead, but idk if this will have consequences
                 auto message = cluon::extractMessage<opendlv::proxy::DistanceReading>(std::move(envelope));
@@ -66,7 +64,7 @@ int32_t main(int32_t argc, char **argv) {
                 
                 if(stamp == 0) 
                 {
-                    distanceReading = msg.distance();
+                    distanceReading = message.distance();
                     if(VERBOSE)
                     {
                         std::cout << "onCarDetected: Received distance reading from front: " << distanceReading << std::endl;
@@ -78,27 +76,24 @@ int32_t main(int32_t argc, char **argv) {
         
         auto sendCarSpeed
         {
-            [VERBOSE, &distanceReading]() -> bool
+            [VERBOSE, &distanceReading, &od4]() -> bool
             {
-                opendlv::proxy::pedalPositionRequest pedalReq;
-                float speed = 0.4;
-                //checks the bracket for each distance and breaks if it's too close
-                switch(distanceReading)
-                {
-                    case (distanceReading <= 0.675):
-                    speed -= 0.1;
+                opendlv::proxy::PedalPositionRequest pedalReq;
+                float speed = 0.2;
+                //checks the bracket for each distance and  slows down accordingly
+                //alternatively, brakes if it's too close
+                
+                //if(distanceReading <= 0.775) speed -= 0.075;
 
-                    case (distanceReading <= 0.45):
-                    speed -= 0.1;
+                if (distanceReading <= 0.45) speed -= 0.1;
 
-                    case (distanceReading <= 0.225):
-                    speed -= 0.1;
+                if (distanceReading <= 0.225) speed -= 0.1;
 
-                    case (distanceReading <= 0.1):
-                    speed -= 0.1;
-                }
+                if (distanceReading <= 0.1) speed = 0.0;
+                
                 pedalReq.position(speed);
                 od4.send(pedalReq);
+
                 if(VERBOSE)
                 {
                     std::cout << "sendCarSpeed: Setting speed to: " << speed << std::endl;
@@ -107,10 +102,12 @@ int32_t main(int32_t argc, char **argv) {
             }
         };
 
-        while(od4.isRunning())
+        od4.timeTrigger(FREQ, sendCarSpeed);
+
+        /*while(od4.isRunning())
         {
             sendCarSpeed();
-        }
+        }*/
         return 0;
     }  
 }
