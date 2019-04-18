@@ -11,3 +11,8 @@ def isStopSignDetected(cascade,image):
     stopSigns = getObjectsFromFrame(cascade,image)
     if(len(stopSigns)>0):
         print("Stop sign detected!")
+
+def numCarsDetected(cascade,image):
+    cars = getObjectsFromFrame(cascade,image)
+    if(len(cars)>1):
+        print("That's a car babby!")

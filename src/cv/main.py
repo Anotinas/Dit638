@@ -11,13 +11,24 @@ Trained Stop Sign classifier taken from:
 https://github.com/cfizette/road-sign-cascades
 """
 stopSignCascadePath = "%s/classifiers/Stopsign_HAAR_19Stages.xml"%(os.getcwd())
+"""
+Trained car classifier trained using 
+https://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html
+tutorial
+"""
+carCascadePath = "%s/classifiers/car.xml"%(os.getcwd())
+
 
 #Main PI loop
 def main():
-    print(stopSignCascadePath)
     #Load classifiers
     stopSignCascade = cv2.CascadeClassifier(stopSignCascadePath)
+    carCascade = cv2.CascadeClassifier(carCascadePath)
+    print(stopSignCascade)
+    print(carCascade)
     """
+        MAIN LOOP
+
         Video loop logic taken from OpenCV offical documentation 
         https://docs.opencv.org/3.4/dd/d43/tutorial_py_video_display.html
     """
@@ -30,6 +41,8 @@ def main():
         Run stop sign detection as test
         """
         recog.isStopSignDetected(stopSignCascade,gray)
+        recog.numCarsDetected(carCascade,gray)
+
         cv2.imshow('frame',gray)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
