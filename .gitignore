@@ -1,5 +1,9 @@
 #Local dependencies
 *.idea/
+VroomNEverendingInstallation.vcxproj
+VroomNEverendingInstallation.vcxproj.filters
+VroomNEverendingInstallation.vcxproj.user
+x64/
 
 #OS specific
 .DS_Store
