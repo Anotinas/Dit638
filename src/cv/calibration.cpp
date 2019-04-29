@@ -1,4 +1,4 @@
-#include "color_calibration.h"
+#include "calibration.h"
 
 const std::string windowName = "MaskAdjuster";
 
@@ -7,7 +7,7 @@ const int HueMax = 179;
 const int SatMax = 255;
 const int ValMax = 255;
 
-void createTrackbarWindow(){
+void calibration::createTrackbarWindow(){
     //ints to capture value change
     int HueLow = 0;
     int SatLow = 0; 
@@ -31,7 +31,7 @@ void createTrackbarWindow(){
     cv::createTrackbar("Val High", windowName, &ValHigh, ValMax);
 }
 
-void showTrackbarWindow(cv::Mat frame){
+void calibration::showTrackbarWindow(cv::Mat frame){
     cv::Mat HSV;
     cv::cvtColor(frame, HSV, cv::COLOR_BGR2HSV); 
 
