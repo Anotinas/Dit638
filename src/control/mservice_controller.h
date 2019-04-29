@@ -22,7 +22,8 @@ class mservice_controller{
 	//functions
 	mservice_controller();
 	void controllerThread(cluon::OD4Session *od4);
-	bool sendSpeed(float speed, cluon::OD4Session od4);
+	void sendSpeed(float speed, cluon::OD4Session *od4);
+	void sendSteer(float steering, cluon::OD4Session *od4);
 	float readSensorData(uint16_t sensor);
 };
 

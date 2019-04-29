@@ -2,9 +2,10 @@
 #Example code, modified to exclude OpenCV dependency
  
 cmake_minimum_required(VERSION 3.2)
-project(mservice_controller)
+project(main)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(OPENDLV_MESSAGE_SET messages.odvd)
 set(CLUON_COMPLETE cluon-complete.hpp)
@@ -12,7 +13,6 @@ set(CLUON_COMPLETE cluon-complete.hpp)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 set(LIBRARIES Threads::Threads)
-set(FUCKASS ${CMAKE_CURRENT_SOURCE_DIR}/src/mservice_controller.h)
 
 
 ################################################################################
@@ -32,11 +32,27 @@ add_custom_target(messages.hpp
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${OPENDLV_MESSAGE_SET} ${CMAKE_BINARY_DIR}/cluon-msc)
 
 
+file(GLOB SRC
+    ${PROJECT_SOURCE_DIR}/src/*.h
+    ${PROJECT_SOURCE_DIR}/src/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/cv/*.h
+    ${PROJECT_SOURCE_DIR}/src/cv/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/control/*.h
+    ${PROJECT_SOURCE_DIR}/src/control/*.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SRC})
 
 include_directories(SYSTEM ${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/mservice_controller.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/msc_test.cpp)
 add_dependencies(${PROJECT_NAME} messages.hpp)
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${FUCKASS})
+
+################################################################################
+# OpenCV 
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+
+target_link_libraries(main ${OpenCV_LIBS})
