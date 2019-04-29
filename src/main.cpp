@@ -1,5 +1,6 @@
 #include "opencv2/opencv.hpp"
-#include "cv/color_calibration.h"
+#include "cv/calibration.h"
+#include "cv/tracking.h"
 
 int main()
 {
@@ -8,20 +9,27 @@ int main()
     //Close program on failure
     if(!cap.isOpened()){ return -1; }
 
-    createTrackbarWindow(); 
+    cv::Mat frame, HSV;
+
+    calibration::createTrackbarWindow(); 
 
     //Loop until Esc btn pressed
     while(1)
     {
-        if(cv::waitKey(30) >= 0) break;
-
+        if(cv::waitKey(30) >= 0) break; //Await Esc
         //Extract frame
-        cv::Mat frame;
-        cap >> frame;
-
-        showTrackbarWindow(frame);
-        //cv::imshow("frame", frame);
+        cap.read(frame);
+        //Turn into HSV
+        cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
+        //Count cars on frame
+        int carsCount = tracking::detectObjects(HSV,frame);
+        //TODO Remove this line after debugging
+        cv::putText(frame, std::to_string(carsCount), cv::Point(0,50), 1, 2, cv::Scalar(0,255,0));
+        //show frames 
+        cv::imshow("frame",frame);
     }
+
+    calibration::showTrackbarWindow(frame);
 
     // Intersection mode
     //     detect and register streets signs
