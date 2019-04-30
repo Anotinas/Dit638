@@ -21,19 +21,29 @@ int main()
         cap.read(frame);
         //Turn into HSV
         cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
-        //Count cars on frame
-        int carsCount = tracking::detectObjects(HSV,frame);
+        tracking::trackGrid(HSV,frame);
+       
         //TODO Remove this line after debugging
-        cv::putText(frame, std::to_string(carsCount), cv::Point(0,50), 1, 2, cv::Scalar(0,255,0));
+        //cv::putText(frame, std::to_string(carsCount), cv::Point(0,50), 1, 2, cv::Scalar(0,255,0));
         //show frames 
         cv::imshow("frame",frame);
     }
 
     calibration::showTrackbarWindow(frame);
 
+     // Follow car mode
+    //     if isCarRecognised()
+    //             if Stopsign recognised
+    //                 register stop sign 
+    //             if stop sign registered && car not moving
+    //                 enter Intersection mode
+    //     else
+    //         stop moving
+
     // Intersection mode
-    //     detect and register streets signs
+        //Count cars on frame
     //     await given direction
+   
     //         if given direction not allowed by streets signs 
     //             refuse()
     //     Count cars q
@@ -44,14 +54,6 @@ int main()
     //     move / turn in given direction
     //     enter standby mode
 
-    // Follow car mode
-    //     if isCarRecognised()
-    //             if Stopsign recognised
-    //                 register stop sign 
-    //             if stop sign registered && car not moving
-    //                 enter Intersection mode
-    //     else
-    //         stop moving
-
+   
     return 0;
 }

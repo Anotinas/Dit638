@@ -20,7 +20,14 @@ namespace tracking
         double area;    
     } Object;
 
-    int detectObjects(cv::Mat hsv, cv::Mat &frame);
+    std::vector<Object> detectObjects(cv::Mat hsv, cv::Mat &frame);
     void markObjects(std::vector<Object> objects,cv::Mat &frame);
     void morphFrame(cv::Mat &frame);
+    Object detectCarAt9oclock(std::vector<Object> objects);
+    Object detectCarAt12oclock(std::vector<Object> objects);
+    Object detectCarAt3oclock(std::vector<Object> objects);
+    Object detectAtPosition(std::vector<Object> objects, int lowerBound,int upperBound);
+    void doSHit(cv::Mat hsv,cv::Mat &frame);
+    void trackGrid(cv::Mat hsv,cv::Mat &frame);
+
 }
