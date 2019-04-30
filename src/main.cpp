@@ -3,11 +3,13 @@
 #include "cv/tracking.h"
 
 enum Mode {idle,following, intersection};
-void doIdle(cv::Mat hsv, cv::Mat &frame);
+void doIdle(cv::Mat &frame);
 void doFollow(cv::Mat &frame);
 void doIntersection(cv::Mat hsv,cv::Mat &frame);
 
 Mode mode = idle;
+
+bool calibrationEnabled = false;
 
 int main()
 {
@@ -17,8 +19,10 @@ int main()
     if(!cap.isOpened()){ return -1; }
 
     cv::Mat frame, HSV;
-
-    calibration::createTrackbarWindow(); 
+    if(calibrationEnabled)
+    {
+        calibration::createTrackbarWindow(); 
+    }
 
     //Loop until Esc btn pressed
     while(1)
@@ -29,10 +33,9 @@ int main()
         //Turn into HSV
         cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
         tracking::trackGrid(HSV,frame);
-
         switch(mode){
             case idle:
-                doIdle(HSV,frame);
+                doIdle(frame);
                 break;
             case following:
                 doFollow(frame);
@@ -41,49 +44,31 @@ int main()
                 doIntersection(HSV,frame);
                 break;
         }
-       
         //show frames 
         cv::imshow("frame",frame);
-        calibration::showTrackbarWindow(frame);
-   
-        // Follow car mode
-        //     if isCarRecognised()
-        //             if Stopsign recognised
-        //                 register stop sign 
-        //             if stop sign registered && car not moving
-        //                 enter Intersection mode
-        //     else
-        //         stop moving
-
-        // Intersection mode
-            //Count cars on frame
-        //     await given direction
-        //         if given direction not allowed by streets signs 
-        //             refuse()
-        //     Count cars q
-        //     Roll up to stop line
-        //     while count cars > 0 
-        //         if car detected passing by
-        //             countCars--
-        //     move / turn in given direction
-        //     enter standby mode
+        if(calibrationEnabled)
+        {
+            calibration::showTrackbarWindow(frame);
+        }
     }
-   
     return 0;
 }
 
-void doIdle(cv::Mat hsv,cv::Mat &frame)
+void doIdle(cv::Mat &frame)
 {
-    std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
-    tracking::Object o = tracking::detectCarAt9oclock(cars);
-    if(o.area != -1)
-    {
-        mode = intersection;
-    }
+     mode = intersection;
 }
 
 void doFollow(cv::Mat &frame)
 {
+    // Follow car mode
+    //     if isCarRecognised()
+    //             if Stopsign recognised
+    //                 register stop sign 
+    //             if stop sign registered && car not moving
+    //                 enter Intersection mode
+    //     else
+    //         stop moving
 }
 
 void doIntersection(cv::Mat hsv,cv::Mat &frame)
@@ -94,4 +79,16 @@ void doIntersection(cv::Mat hsv,cv::Mat &frame)
     {
         mode = idle;
     }
+    // Intersection mode
+        //Count cars on frame
+    //     await given direction
+    //         if given direction not allowed by streets signs 
+    //             refuse()
+    //     Count cars q
+    //     Roll up to stop line
+    //     while count cars > 0 
+    //         if car detected passing by
+    //             countCars--
+    //     move / turn in given direction
+    //     enter standby mode
 }
