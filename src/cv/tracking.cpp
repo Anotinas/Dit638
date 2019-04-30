@@ -9,6 +9,14 @@ const int right = 900;
 
 const int frameBound = 1200;
 
+cv::CascadeClassifier stopSignCascade;
+
+void tracking::LoadCascades()
+{
+    stopSignCascade.load("/Users/mokkants/Documents/workspace/cpp/car/src/cv/classifiers/Stopsign_HAAR_19Stages.xml");
+}
+ 
+
 tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> objects, int lowerBound,int upperBound)
 {
     tracking::Object o;
@@ -126,4 +134,20 @@ void tracking::trackGrid(cv::Mat hsv,cv::Mat &frame)
         {
              cv::putText(frame, "XDDDDD", cv::Point(0,250), 1, 2, cv::Scalar(0,0,255));
         }
+}
+
+void tracking::detectStopSigns(cv::Mat &frame)
+{
+    cv::putText(frame, "followMode", cv::Point(0,50), 1, 2, cv::Scalar(255,0,0));
+    cv::Mat gray;
+    cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+
+    std::vector<cv::Rect> stopSigns;
+
+    stopSignCascade.detectMultiScale(gray, stopSigns,10, 1,0, cv::Size(1,1));
+
+    if(stopSigns.size()>0)
+    {
+        cv::putText(frame, "thats", cv::Point(0,150), 1, 2, cv::Scalar(255,0,0));
+    }
 }

@@ -29,5 +29,6 @@ namespace tracking
     Object detectAtPosition(std::vector<Object> objects, int lowerBound,int upperBound);
     void doSHit(cv::Mat hsv,cv::Mat &frame);
     void trackGrid(cv::Mat hsv,cv::Mat &frame);
-
+    void LoadCascades();
+    void detectStopSigns(cv::Mat &frame);
 }
