@@ -1,9 +1,14 @@
 #Local dependencies
 *.idea/
+.vscode/
 VroomNEverendingInstallation.vcxproj
 VroomNEverendingInstallation.vcxproj.filters
 VroomNEverendingInstallation.vcxproj.user
+packages.config
 x64/
+src/TestProjects/Testing/Testing.vcxproj
+src/TestProjects/Testing/Testing.vcxproj.user
+
 
 #OS specific
 .DS_Store
