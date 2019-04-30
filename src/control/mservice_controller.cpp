@@ -3,7 +3,7 @@
 * related to moving the car and reading sensor output.
 * Author: Filip Fatic
 * Date: 2019-04-18
-* Version: 0.1
+* Version: 1.0
 *************************************/
 
 #include <cstdint>
@@ -16,7 +16,7 @@
 #include "messages.hpp"
 #include "mservice_controller.h"
 
-
+    //TODO make private somehow
     static float m_dataFront, m_dataBack, m_dataLeft, m_dataRight = 0.0; 
     mservice_controller::mservice_controller()
     {
@@ -29,15 +29,13 @@
 	const uint16_t SENSOR_LEFT = 2;
 	const uint16_t SENSOR_RIGHT = 3;
 
-    void /***/mservice_controller::controllerThread(cluon::OD4Session *od4)
+    void mservice_controller::controllerThread(cluon::OD4Session *od4)
     {
-        //od4 = new cluon::OD4Session(112);
         if(od4->isRunning() == 0)
         {
             std::cerr << "ERROR: No od4 session running." << std::endl;
             status = -1;
             exit(-1);
-            //pthread_exit(-1);
         }
 
         //function that constantly reads distance for every sensor
@@ -51,7 +49,6 @@
                     auto message = cluon::extractMessage<opendlv::proxy::DistanceReading>(std::move(envelope));
                     const uint16_t stamp = envelope.senderStamp();
                     
-                    //this should be a switch but i'm honestly too lazy to change it now
                     if(stamp == SENSOR_FRONT) 
                     {
                         m_dataFront = message.distance();
@@ -77,29 +74,31 @@
     //ranges from 0 to 1, but dont do 1
     //fastest value I personally use is 0.4
     //use negative to go backwards
-    bool mservice_controller::sendSpeed(float speed, cluon::OD4Session od4)
+    //TODO make guard for invalid values
+    void mservice_controller::sendSpeed(float speed, cluon::OD4Session *od4)
     {
-        auto sendCarSpeed
-        {
-            [&od4, &speed]()-> bool
-            {
                 //creates a pedal request to fill with data and send
                 opendlv::proxy::PedalPositionRequest pedalReq;
                 
                 //sets the speed and sends it to the car
                 pedalReq.position(speed);
-                od4.send(pedalReq);
-
-                return true;
-            }
-        };
-        return false;
+                od4->send(pedalReq);
     }
-        //make method for ultrasonic sensor output
+
+
+    //Sets the degree to which the wheels are turned
+    //steering should be a value from 0 to 0.???
+    //use negative values for other direction
+    //no i do not know what other direction is
+    //TODO make guard for invalid values
+    void mservice_controller::sendSteer(float steering, cluon::OD4Session *od4)
+    {
+        opendlv::proxy::GroundSteeringRequest steerReq;
+        steerReq.groundSteering(steering);
+        od4->send(steerReq);
+    }
 
     //returns data read from corresponding sensor
-    //NOTE TO ARAZ: Write a unit test for this by creating a mock
-    //for the sensors please and thank you
     float mservice_controller::readSensorData(uint16_t sensor)
     {
         switch(sensor)
