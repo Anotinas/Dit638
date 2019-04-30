@@ -2,6 +2,15 @@
 #include "cv/calibration.h"
 #include "cv/tracking.h"
 
+enum Mode {idle,following, intersection};
+void doIdle(cv::Mat &frame);
+void doFollow(cv::Mat &frame);
+void doIntersection(cv::Mat hsv,cv::Mat &frame);
+
+Mode mode = idle;
+
+bool calibrationEnabled = false;
+
 int main()
 {
     //Open camera
@@ -10,8 +19,10 @@ int main()
     if(!cap.isOpened()){ return -1; }
 
     cv::Mat frame, HSV;
-
-    calibration::createTrackbarWindow(); 
+    if(calibrationEnabled)
+    {
+        calibration::createTrackbarWindow(); 
+    }
 
     //Loop until Esc btn pressed
     while(1)
@@ -22,16 +33,35 @@ int main()
         //Turn into HSV
         cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
         tracking::trackGrid(HSV,frame);
-       
-        //TODO Remove this line after debugging
-        //cv::putText(frame, std::to_string(carsCount), cv::Point(0,50), 1, 2, cv::Scalar(0,255,0));
+        switch(mode){
+            case idle:
+                doIdle(frame);
+                break;
+            case following:
+                doFollow(frame);
+                break; 
+            case intersection:
+                doIntersection(HSV,frame);
+                break;
+        }
         //show frames 
         cv::imshow("frame",frame);
+        if(calibrationEnabled)
+        {
+            calibration::showTrackbarWindow(frame);
+        }
     }
+    return 0;
+}
 
-    calibration::showTrackbarWindow(frame);
+void doIdle(cv::Mat &frame)
+{
+     mode = intersection;
+}
 
-     // Follow car mode
+void doFollow(cv::Mat &frame)
+{
+    // Follow car mode
     //     if isCarRecognised()
     //             if Stopsign recognised
     //                 register stop sign 
@@ -39,11 +69,19 @@ int main()
     //                 enter Intersection mode
     //     else
     //         stop moving
+}
 
+void doIntersection(cv::Mat hsv,cv::Mat &frame)
+{
+     std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
+    tracking::Object o = tracking::detectCarAt9oclock(cars);
+    if(o.area == -1)
+    {
+        mode = idle;
+    }
     // Intersection mode
         //Count cars on frame
     //     await given direction
-   
     //         if given direction not allowed by streets signs 
     //             refuse()
     //     Count cars q
@@ -53,7 +91,4 @@ int main()
     //             countCars--
     //     move / turn in given direction
     //     enter standby mode
-
-   
-    return 0;
 }
