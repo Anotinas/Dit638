@@ -1,26 +1,41 @@
-#include "opencv2/opencv.hpp"
-#include "cv/calibration.h"
-#include "cv/tracking.h"
+#include "main.h"
 
-enum Mode {idle,following, intersection};
-void doIdle(cv::Mat &frame);
-void doFollow(cv::Mat &frame);
-void doIntersection(cv::Mat hsv,cv::Mat &frame);
+cv::Mat frame, HSV;
+
+tracking::Object carAt9 = {.position.x = -1, .position.y = -1, .area = -1};
+tracking::Object carAt12 = {.position.x = -1, .position.y = -1, .area = -1};
+tracking::Object carAt3 = {.position.x = -1, .position.y = -1, .area = -1};
 
 bool calibrationEnabled = false;
-
 Mode mode = idle;
+
+const int FRAME_WIDTH = 1200;
+const int FRAME_HEIGHT = 600;
+
+void setMode(Mode m)
+{
+    mode = m;
+    switch(mode)
+    {
+        case intersection:
+            for(int i = 0; i<10;i++)
+            setupIntersection();
+            break;
+        default:
+            break;
+    }
+}
 
 int main()
 {
-    
    tracking::LoadCascades();
     //Open camera
     cv::VideoCapture cap(0); 
     //Close program on failure
     if(!cap.isOpened()){ return -1; }
 
-    cv::Mat frame, HSV;
+    cap.set(cv::CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
 
     if(calibrationEnabled)
     {
@@ -35,7 +50,11 @@ int main()
         cap.read(frame);
         //Turn into HSV
         cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
-        tracking::trackGrid(HSV,frame);
+
+        if(carAt3.area > 0){
+            tracking::putText("sanic",frame);
+        }
+        //tracking::trackGrid(HSV,frame);
         switch(mode){
             case idle:
                 doIdle(frame);
@@ -59,7 +78,7 @@ int main()
 
 void doIdle(cv::Mat &frame)
 {
-     mode = intersection;
+    setMode(intersection);
 }
 
 void doFollow(cv::Mat &frame)
@@ -75,12 +94,7 @@ void doFollow(cv::Mat &frame)
 
 void doIntersection(cv::Mat hsv,cv::Mat &frame)
 {
-     std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
-    tracking::Object o = tracking::detectCarAt9oclock(cars);
-    if(o.area != -1)
-    {
-        mode = following;
-    }
+   
     //Roll up to stop line
     //     await given direction
     //         if given direction not allowed by streets signs 
@@ -90,4 +104,16 @@ void doIntersection(cv::Mat hsv,cv::Mat &frame)
     //  countCars--
     //     move / turn in given direction
     //     enter standby mode
+}
+
+void setupIntersection()
+{
+    //Get cars from frame
+    std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+    if(carAt9.area < 1)
+    carAt9 = tracking::detectCarAt9oclock(cars);
+    if(carAt12.area < 1)
+    carAt12 = tracking::detectCarAt12oclock(cars);
+    if(carAt3.area < 1)
+    carAt3 = tracking::detectCarAt3oclock(cars);
 }

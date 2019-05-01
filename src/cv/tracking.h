@@ -31,4 +31,6 @@ namespace tracking
     void trackGrid(cv::Mat hsv,cv::Mat &frame);
     void LoadCascades();
     void detectStopSigns(cv::Mat &frame);
+    void putText(std::string s,cv::Mat &frame);
+
 }

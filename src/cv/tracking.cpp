@@ -3,11 +3,14 @@
 const cv::Scalar CAR_LOW_HSV = cv::Scalar(22,71,110);
 const cv::Scalar CAR_HIGH_HSV = cv::Scalar(92,222,235);
 
-const int left = 300;
-const int leftMid = 600;
-const int right = 900;
-
 const int frameBound = 1200;
+const int gridUnit = frameBound/5;
+
+const int left = gridUnit;
+const int leftMid =  2*gridUnit;
+const int mid = 3*gridUnit;
+const int rightMid = 4*gridUnit;
+const int right = 5*gridUnit;
 
 cv::CascadeClassifier stopSignCascade;
 
@@ -15,7 +18,6 @@ void tracking::LoadCascades()
 {
     stopSignCascade.load("/Users/mokkants/Documents/workspace/cpp/car/src/cv/classifiers/Stopsign_HAAR_19Stages.xml");
 }
- 
 
 tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> objects, int lowerBound,int upperBound)
 {
@@ -44,7 +46,7 @@ tracking::Object tracking::detectCarAt12oclock(std::vector<tracking::Object> obj
 
 tracking::Object tracking::detectCarAt3oclock(std::vector<tracking::Object> objects)
 {
-   return detectAtPosition(objects,right,frameBound);
+   return detectAtPosition(objects,rightMid,right);
 }
 
 //Returns number of objects found on frame
@@ -150,4 +152,9 @@ void tracking::detectStopSigns(cv::Mat &frame)
     {
         cv::putText(frame, "thats", cv::Point(0,150), 1, 2, cv::Scalar(255,0,0));
     }
+}
+
+void tracking::putText(std::string s,cv::Mat &frame)
+{
+    cv::putText(frame, s, cv::Point(0,50), 1, 2, cv::Scalar(255,0,0));
 }
