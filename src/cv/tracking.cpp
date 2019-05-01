@@ -120,6 +120,7 @@ void tracking::morphFrame(cv::Mat &frame)
 }
 
 bool carDetected = false;
+int carNotSeenForFrames = 0;
 
 //Run after car rolls up to stop line
 bool tracking::scanForMovement(cv::Mat hsv, cv::Mat frame,int rightmostBound)
@@ -132,12 +133,20 @@ bool tracking::scanForMovement(cv::Mat hsv, cv::Mat frame,int rightmostBound)
     if(car.area > -1)
     {
         carDetected = true;
+        if(carNotSeenForFrames > 0){
+            carNotSeenForFrames = 0;
+        }
     }
 
-    else if(car.area < 1 && carDetected)
+    if(car.area < 1 && carDetected && carNotSeenForFrames >= 50)
     {
         carDetected = false;
         return true;
+    }
+    else if(car.area < 1 && carDetected)
+    {
+        carNotSeenForFrames++;
+        return false;
     }
 
     return false;
