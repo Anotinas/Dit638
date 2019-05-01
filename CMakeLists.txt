@@ -19,17 +19,17 @@ set(LIBRARIES Threads::Threads)
 # Extract cluon-msc from cluon-complete.hpp
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/cluon-msc
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/src/${CLUON_COMPLETE} ${CMAKE_BINARY_DIR}/cluon-complete.hpp
-    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/src/${CLUON_COMPLETE} ${CMAKE_BINARY_DIR}/cluon-complete.cpp
+    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/src/control/${CLUON_COMPLETE} ${CMAKE_BINARY_DIR}/cluon-complete.hpp
+    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/src/control/${CLUON_COMPLETE} ${CMAKE_BINARY_DIR}/cluon-complete.cpp
     COMMAND ${CMAKE_CXX_COMPILER} -o ${CMAKE_BINARY_DIR}/cluon-msc ${CMAKE_BINARY_DIR}/cluon-complete.cpp -std=c++14 -pthread -DHAVE_CLUON_MSC
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${CLUON_COMPLETE})
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/control/${CLUON_COMPLETE})
 
 ################################################################################
 # Generate message.hpp using cluon-msc
 add_custom_target(messages.hpp
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMAND ${CMAKE_BINARY_DIR}/cluon-msc --cpp --out=${CMAKE_BINARY_DIR}/messages.hpp ${CMAKE_CURRENT_SOURCE_DIR}/src/${OPENDLV_MESSAGE_SET}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${OPENDLV_MESSAGE_SET} ${CMAKE_BINARY_DIR}/cluon-msc)
+    COMMAND ${CMAKE_BINARY_DIR}/cluon-msc --cpp --out=${CMAKE_BINARY_DIR}/messages.hpp ${CMAKE_CURRENT_SOURCE_DIR}/src/control/${OPENDLV_MESSAGE_SET}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/control/${OPENDLV_MESSAGE_SET} ${CMAKE_BINARY_DIR}/cluon-msc)
 
 
 file(GLOB SRC
