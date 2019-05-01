@@ -1,16 +1,20 @@
 #include "main.h"
 
+const int FRAME_WIDTH = 1200;
+const int FRAME_HEIGHT = 600;
+
+const int MOVEMENT_THRESHOLD = 10;
+
 cv::Mat frame, HSV;
 
 tracking::Object carAt9 = {.position.x = -1, .position.y = -1, .area = -1};
 tracking::Object carAt12 = {.position.x = -1, .position.y = -1, .area = -1};
 tracking::Object carAt3 = {.position.x = -1, .position.y = -1, .area = -1};
 
+int carsCount = 0;
+
 bool calibrationEnabled = false;
 Mode mode = idle;
-
-const int FRAME_WIDTH = 1200;
-const int FRAME_HEIGHT = 600;
 
 void setMode(Mode m)
 {
@@ -18,7 +22,7 @@ void setMode(Mode m)
     switch(mode)
     {
         case intersection:
-            for(int i = 0; i<10;i++)
+            for(int i = 0; i < 10; i++)
             setupIntersection();
             break;
         default:
@@ -51,9 +55,6 @@ int main()
         //Turn into HSV
         cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
 
-        if(carAt3.area > 0){
-            tracking::putText("sanic",frame);
-        }
         //tracking::trackGrid(HSV,frame);
         switch(mode){
             case idle:
@@ -94,26 +95,64 @@ void doFollow(cv::Mat &frame)
 
 void doIntersection(cv::Mat hsv,cv::Mat &frame)
 {
-   
     //Roll up to stop line
     //     await given direction
     //         if given direction not allowed by streets signs 
     //             refuse()
-    //while count cars > 0 
-    //  if car detected passing by
-    //  countCars--
+    //Determine 12 o clock car position if we detected one earlier
+    
+    if(carsCount > 0)
+    {
+    tracking::putText(std::to_string(carsCount), frame);
+        //  if car detected passing by
+        bool carHasPassed = carAt12.area > 1 ?
+            tracking::scanForMovement(hsv,frame,carAt12.position.x)
+            :
+            tracking::scanForMovement(hsv,frame,FRAME_WIDTH/3);      
+        if(carHasPassed) 
+        {
+            carsCount--;
+        }
+    }
+    else
+    {
+    tracking::putText("Time to vroom", frame);
+    }
+
     //     move / turn in given direction
-    //     enter standby mode
+    //enter standby mode
 }
 
 void setupIntersection()
 {
     //Get cars from frame
     std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+    tracking::Object o;
     if(carAt9.area < 1)
-    carAt9 = tracking::detectCarAt9oclock(cars);
+    {
+        o = tracking::detectCarAt9oclock(cars);
+        if(o.area > 0 && carAt9.area < 0)
+        {
+            carAt9 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carsCount++;
+        }
+    }
     if(carAt12.area < 1)
-    carAt12 = tracking::detectCarAt12oclock(cars);
+    {
+        o = tracking::detectCarAt12oclock(cars);
+        if(o.area > 0 && carAt12.area < 0)
+        {
+            carAt12 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carsCount++;
+        }
+    }
     if(carAt3.area < 1)
-    carAt3 = tracking::detectCarAt3oclock(cars);
+    {
+        o = tracking::detectCarAt3oclock(cars);
+        if(o.area > 0 && carAt3.area < 0)
+        {
+            carAt3 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carsCount++;
+        }
+    }
 }

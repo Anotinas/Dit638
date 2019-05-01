@@ -9,14 +9,14 @@ const int ValMax = 255;
 
 void calibration::createTrackbarWindow(){
     //ints to capture value change
-    int HueLow = 0;
-    int SatLow = 0; 
-    int ValLow = 0;
+    int HueLow = 22;
+    int SatLow = 71; 
+    int ValLow = 110;
 
     //set highs to max value on bar
-    int HueHigh = HueMax;
-    int SatHigh = SatMax;
-    int ValHigh = ValMax;
+    int HueHigh = 92;
+    int SatHigh = 222;
+    int ValHigh = 235;
 
     //Open window
     cv::namedWindow(windowName); 
