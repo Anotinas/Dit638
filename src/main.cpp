@@ -22,7 +22,7 @@ void setMode(Mode m)
     switch(mode)
     {
         case intersection:
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 500; i++)
             setupIntersection();
             break;
         default:
@@ -128,28 +128,31 @@ void setupIntersection()
     //Get cars from frame
     std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
     tracking::Object o;
+
     if(carAt9.area < 1)
     {
         o = tracking::detectCarAt9oclock(cars);
-        if(o.area > 0 && carAt9.area < 0)
+        if(o.area > 0)
         {
             carAt9 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
             carsCount++;
         }
     }
+
     if(carAt12.area < 1)
     {
         o = tracking::detectCarAt12oclock(cars);
-        if(o.area > 0 && carAt12.area < 0)
+        if(o.area > 0)
         {
             carAt12 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
             carsCount++;
         }
     }
+
     if(carAt3.area < 1)
     {
         o = tracking::detectCarAt3oclock(cars);
-        if(o.area > 0 && carAt3.area < 0)
+        if(o.area > 0)
         {
             carAt3 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
             carsCount++;
