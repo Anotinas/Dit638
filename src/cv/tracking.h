@@ -28,7 +28,9 @@ namespace tracking
     Object detectCarAt3oclock(std::vector<Object> objects);
     Object detectAtPosition(std::vector<Object> objects, int lowerBound,int upperBound);
     void doSHit(cv::Mat hsv,cv::Mat &frame);
-    void trackGrid(cv::Mat hsv,cv::Mat &frame);
+    bool scanForMovement(cv::Mat hsv, cv::Mat frame, int rightmostBound);
     void LoadCascades();
     void detectStopSigns(cv::Mat &frame);
+    void putText(std::string s,cv::Mat &frame);
+
 }

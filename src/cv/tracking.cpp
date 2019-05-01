@@ -3,11 +3,16 @@
 const cv::Scalar CAR_LOW_HSV = cv::Scalar(22,71,110);
 const cv::Scalar CAR_HIGH_HSV = cv::Scalar(92,222,235);
 
-const int left = 300;
-const int leftMid = 600;
-const int right = 900;
-
 const int frameBound = 1200;
+const int gridUnit = frameBound/5;
+
+const int left = 240;
+const int leftMid =  480;
+const int mid = 720;
+const int rightMid = 960;
+const int right = 1200;
+
+const int carAt12XPos = -1;
 
 cv::CascadeClassifier stopSignCascade;
 
@@ -15,7 +20,6 @@ void tracking::LoadCascades()
 {
     stopSignCascade.load("/Users/mokkants/Documents/workspace/cpp/car/src/cv/classifiers/Stopsign_HAAR_19Stages.xml");
 }
- 
 
 tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> objects, int lowerBound,int upperBound)
 {
@@ -44,7 +48,7 @@ tracking::Object tracking::detectCarAt12oclock(std::vector<tracking::Object> obj
 
 tracking::Object tracking::detectCarAt3oclock(std::vector<tracking::Object> objects)
 {
-   return detectAtPosition(objects,right,frameBound);
+   return detectAtPosition(objects,mid,right);
 }
 
 //Returns number of objects found on frame
@@ -115,25 +119,28 @@ void tracking::morphFrame(cv::Mat &frame)
     cv::dilate(frame,frame,dilateElement, cv::Point(-1,-1),iteration);
 }
 
-void tracking::trackGrid(cv::Mat hsv,cv::Mat &frame)
-{
-        std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
+bool carDetected = false;
 
-        tracking::Object car1 = tracking::detectCarAt9oclock(cars);
-        if(car1.area!=-1)
-        {
-             cv::putText(frame, "XDDDDD", cv::Point(0,50), 1, 2, cv::Scalar(0,255,0));
-        }
-        tracking::Object car2 = tracking::detectCarAt12oclock(cars);
-        if(car2.area!=-1)
-        {
-             cv::putText(frame, "XDDDDD", cv::Point(0,150), 1, 2, cv::Scalar(255,0,0));
-        }
-        tracking::Object car3 = tracking::detectCarAt3oclock(cars);
-        if(car3.area!=-1)
-        {
-             cv::putText(frame, "XDDDDD", cv::Point(0,250), 1, 2, cv::Scalar(0,0,255));
-        }
+//Run after car rolls up to stop line
+bool tracking::scanForMovement(cv::Mat hsv, cv::Mat frame,int rightmostBound)
+{
+    int centerThreshold = 50;
+    std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
+    tracking::Object car = detectAtPosition(cars, 0, rightmostBound-centerThreshold);
+
+    //If we detect any car at the leftmost part of the screen
+    if(car.area > -1)
+    {
+        carDetected = true;
+    }
+
+    else if(car.area < 1 && carDetected)
+    {
+        carDetected = false;
+        return true;
+    }
+
+    return false;
 }
 
 void tracking::detectStopSigns(cv::Mat &frame)
@@ -150,4 +157,9 @@ void tracking::detectStopSigns(cv::Mat &frame)
     {
         cv::putText(frame, "thats", cv::Point(0,150), 1, 2, cv::Scalar(255,0,0));
     }
+}
+
+void tracking::putText(std::string s,cv::Mat &frame)
+{
+    cv::putText(frame, s, cv::Point(0,50), 1, 2, cv::Scalar(255,0,0));
 }
