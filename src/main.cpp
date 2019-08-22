@@ -13,7 +13,7 @@ tracking::Object carAt3 = {.position.x = -1, .position.y = -1, .area = -1};
 
 int carsCount = 0;
 
-bool calibrationEnabled = false;
+//bool calibrationEnabled = false;
 Mode mode = idle;
 
 void setMode(Mode m)
@@ -41,10 +41,11 @@ int main()
     cap.set(cv::CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
 
-    if(calibrationEnabled)
+    // Only useful for manual testing.
+    /*(if(calibrationEnabled)
     {
         calibration::createTrackbarWindow(); 
-    }
+    }*/ 
 
     //Loop until Esc btn pressed
     while(1)
@@ -69,10 +70,12 @@ int main()
         }
         //show frames 
         cv::imshow("frame",frame);
-        if(calibrationEnabled)
+
+        // Only useful for manual testing
+        /*if(calibrationEnabled)
         {
             calibration::showTrackbarWindow(frame);
-        }
+        }*/
     }
     return 0;
 }

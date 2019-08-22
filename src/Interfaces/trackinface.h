@@ -3,14 +3,10 @@
 #include <string>
 #include <iostream>
 #include <vector>  
-//#include <opencv2/opencv.hpp>
-//#include <opencv2/highgui/highgui.hpp> 
-#include "../Interfaces/trackinface.h"
+
+#include "cvdefs.h"
 
 
-
-namespace tracking
-{
     typedef struct
     {
         int x;
@@ -36,4 +32,18 @@ namespace tracking
     void detectStopSigns(cv::Mat &frame);
     void putText(std::string s,cv::Mat &frame);
 
-}
+    class trackinface{
+        private:
+            /* data */
+        public:
+            virtual ~trackinface();
+            virtual Object detectCarAt9oclock(std::vector<Object> objects) = 0;
+            virtual Object detectCarAt12oclock(std::vector<Object> objects) = 0;
+            virtual Object detectCarAt3oclock(std::vector<Object> objects) = 0;
+            virtual Object detectAtPosition(std::vector<Object> objects, int lowerBound,int upperBound) = 0;
+            virtual void LoadCascades() = 0;
+            virtual void detectStopSigns(cv::Mat &frame) = 0;
+            virtual void putText(std::string s,cv::Mat &frame) = 0;
+            virtual bool scanForMovement(cv::Mat hsv, cv::Mat frame, int rightmostBound) = 0;
+            virtual std::vector<Object> detectObjects(cv::Mat hsv, cv::Mat &frame) = 0;
+};

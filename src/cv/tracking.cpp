@@ -1,5 +1,10 @@
 #include "tracking.h"
 
+
+class tracking : public trackinface {
+
+
+};
 const cv::Scalar CAR_LOW_HSV = cv::Scalar(22,71,110);
 const cv::Scalar CAR_HIGH_HSV = cv::Scalar(92,222,235);
 

@@ -1,6 +1,8 @@
-#include "opencv2/opencv.hpp"
-#include "cv/calibration.h"
+//#include "opencv2/opencv.hpp"
+#include "Interfaces/cvdefs.h"
+//#include "cv/calibration.h"
 #include "cv/tracking.h"
+#include "Interfaces/trackinface.h"
 
 enum Mode {idle,following, intersection};
 void doIdle(cv::Mat &frame);
