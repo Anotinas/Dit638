@@ -1,5 +1,4 @@
 #File copied from Yue Kang's and Christian Berger's
-#Example code, modified to exclude OpenCV dependency
  
 cmake_minimum_required(VERSION 3.2)
 project(main)
