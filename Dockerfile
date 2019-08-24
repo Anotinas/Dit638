@@ -18,6 +18,9 @@ RUN apt-get update \
         libtiff-dev \
         libavformat-dev \
         libpq-dev \
+        g++ \
+        make \
+        ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install numpy
@@ -52,10 +55,10 @@ RUN ln -s \
   /usr/local/python/cv2/python-3.7/cv2.cpython-37m-x86_64-linux-gnu.so \
   /usr/local/lib/python3.7/site-packages/cv2.so
 
-#Here is the stuff added in by David. 
-RUN cd .. 
-ADD . ~/git/group_09
-RUN cd ~/git/group_09 && \
+#Here is the stuff added in by David.  
+ADD . ../~/git/group_09 
+RUN  cd ../~/git/group_09 && \
+      ls && \
       cmake . && \
     	make ./msc_test && cp ./msc_test /tmp
 
