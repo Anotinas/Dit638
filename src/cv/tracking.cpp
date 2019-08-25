@@ -24,7 +24,7 @@ void tracking::LoadCascades()
 tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> objects, int lowerBound,int upperBound)
 {
     tracking::Object o;
-    for(int i = 0; i < objects.size(); i++)
+    for(long unsigned int i = 0; i < objects.size(); i++)
     {
         o = objects.at(i);
         if(o.position.x >= lowerBound && o.position.x <= upperBound )
@@ -32,7 +32,9 @@ tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> object
             return o;
         }
     }
-    o = {.position.x = -1, .position.y=-1, .area=-1};
+    o.position.x = -1;
+    o.position.y=-1; 
+    o.area=-1;
     return o;
 }
 
@@ -70,18 +72,16 @@ std::vector<tracking::Object> tracking::detectObjects(cv::Mat hsv,cv::Mat &frame
     if (hierarchy.size() > 0)
     {
         for (int i = 0, size = hierarchy.size(); i <= size-1; i++)
-        {
+        { 
             cv::Moments moment = cv::moments((cv::Mat)contours[i]);
             double area = moment.m00;
             if(area > minArea)
             {
-                //Push object found to array
-                tracking::Object o = 
-                {
-                    .position.x =  static_cast<int>(moment.m10/area),
-                    .position.y =  static_cast<int>(moment.m01/area),
-                    .area = area
-                };
+                tracking::Object o;
+                //Push object found to array 
+                    o.position.x =  static_cast<int>(moment.m10/area);
+                    o.position.y =  static_cast<int>(moment.m01/area);
+                    o.area = area;
                 objects.push_back(o);
             }
         }
@@ -93,7 +93,7 @@ std::vector<tracking::Object> tracking::detectObjects(cv::Mat hsv,cv::Mat &frame
 
 void tracking::markObjects(std::vector<tracking::Object> objects,cv::Mat &frame)
 {
-    for(int i =0; i<objects.size(); i++)
+    for(long unsigned int i =0; i<objects.size(); i++)
     {
         cv::circle(
             frame,

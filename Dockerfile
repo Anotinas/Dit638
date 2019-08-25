@@ -60,13 +60,11 @@ RUN ln -s \
 
 #Here is the stuff added in by David.  
 #Building googletest
-RUN cd /usr/src && \
-    cd googletest/googletest && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make && \
-    cp libgtest* /usr/lib
+
+RUN cd /usr/src/googletest && \
+    cmake . && \
+    cmake --build . --target install
+
 
 #Building the project
 ADD . ../~/git/group_09 

@@ -7,9 +7,14 @@ const int MOVEMENT_THRESHOLD = 10;
 
 cv::Mat frame, HSV;
 
-tracking::Object carAt9 = {.position.x = -1, .position.y = -1, .area = -1};
-tracking::Object carAt12 = {.position.x = -1, .position.y = -1, .area = -1};
-tracking::Object carAt3 = {.position.x = -1, .position.y = -1, .area = -1};
+tracking::Object carAt9;
+
+
+tracking::Object carAt12;
+
+
+tracking::Object carAt3;
+
 
 int carsCount = 0;
 
@@ -32,6 +37,21 @@ void setMode(Mode m)
 
 int main()
 {
+    //Instaniating carAt vars //added by David
+    carAt3.position.x = -1;
+    carAt3.position.y = -1;
+    carAt3.area = -1;
+
+    carAt9.position.x = -1; 
+    carAt9.position.y = -1; 
+    carAt9.area = -1;
+
+    carAt12.position.x = -1;
+    carAt12.position.y = -1; 
+    carAt12.area = -1;
+
+    //instantiation complete
+
    tracking::LoadCascades();
     //Open camera
     cv::VideoCapture cap(0); 
@@ -134,7 +154,9 @@ void setupIntersection()
         o = tracking::detectCarAt9oclock(cars);
         if(o.area > 0)
         {
-            carAt9 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carAt9.position.x=o.position.x;
+            carAt9.position.y = o.position.y; 
+            carAt9.area = o.area;
             carsCount++;
         }
     }
@@ -144,7 +166,9 @@ void setupIntersection()
         o = tracking::detectCarAt12oclock(cars);
         if(o.area > 0)
         {
-            carAt12 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carAt12.position.x=o.position.x; 
+            carAt12.position.y = o.position.y; 
+            carAt12.area = o.area;
             carsCount++;
         }
     }
@@ -154,7 +178,9 @@ void setupIntersection()
         o = tracking::detectCarAt3oclock(cars);
         if(o.area > 0)
         {
-            carAt3 = {.position.x=o.position.x, .position.y = o.position.y, .area = o.area};
+            carAt3.position.x=o.position.x; 
+            carAt3.position.y = o.position.y; 
+            carAt3.area = o.area;
             carsCount++;
         }
     }
