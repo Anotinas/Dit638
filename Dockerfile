@@ -22,7 +22,13 @@ RUN apt-get update \
         make \
         ca-certificates \
         libgtest-dev \
+        software-properties-common \
     && rm -rf /var/lib/apt/lists/*
+
+#Installing hayai #Can not be found at the moment.
+#RUN apt-add-repository ppa:bruun/hayai \
+#    && apt-get update \
+#    && apt-get install libhayai-dev
 
 RUN pip install numpy
 
