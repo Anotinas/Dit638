@@ -55,3 +55,11 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 
 target_link_libraries(main ${OpenCV_LIBS})
+
+#################################################################################
+# GoogleTest
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+add_executable(runTests ${PROJECT_SOURCE_DIR}/src//TestProjects/test.cpp)
+target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)

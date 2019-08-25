@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "test.h"
 
 
 TEST(CameraCVTest, GetFrame) {

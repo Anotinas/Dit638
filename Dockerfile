@@ -28,7 +28,8 @@ RUN pip install numpy
 
 WORKDIR /
 #Building Opencv
-ENV OPENCV_VERSION="4.1.0"
+# ENV OPENCV_VERSION="4.1.0" #Originial version
+ENV OPENCV_VERSION="3.4.6"
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && unzip ${OPENCV_VERSION}.zip \
 && mkdir /opencv-${OPENCV_VERSION}/cmake_binary \
@@ -69,10 +70,11 @@ RUN cd /usr/src && \
 
 #Building the project
 ADD . ../~/git/group_09 
-RUN  cd ../~/git/group_09 && \
+RUN cd ../~/git/group_09 && \
       cmake . && \
       ls && \
-      echo "    " && \
-    	make . && \ 
-      ls
+      echo after_cmake && \
+    	make && \ 
+      ls && \
+      ./runTests
 
