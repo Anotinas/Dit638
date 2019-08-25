@@ -21,11 +21,13 @@ RUN apt-get update \
         g++ \
         make \
         ca-certificates \
+        libgtest-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install numpy
 
 WORKDIR /
+#Building Opencv
 ENV OPENCV_VERSION="4.1.0"
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && unzip ${OPENCV_VERSION}.zip \
@@ -56,9 +58,21 @@ RUN ln -s \
   /usr/local/lib/python3.7/site-packages/cv2.so
 
 #Here is the stuff added in by David.  
+#Building googletest
+RUN cd /usr/src && \
+    cd googletest/googletest && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    cp libgtest* /usr/lib
+
+#Building the project
 ADD . ../~/git/group_09 
 RUN  cd ../~/git/group_09 && \
-      ls && \
       cmake . && \
-    	make ./msc_test && cp ./msc_test /tmp
+      ls && \
+      echo "    " && \
+    	make . && \ 
+      ls
 
