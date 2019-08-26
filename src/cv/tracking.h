@@ -5,6 +5,8 @@
 #include <vector>  
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp> 
+#include <unistd.h>
+#include <stdio.h>
 
 namespace tracking
 {
@@ -20,6 +22,7 @@ namespace tracking
         double area;    
     } Object;
 
+
     std::vector<Object> detectObjects(cv::Mat hsv, cv::Mat &frame);
     void markObjects(std::vector<Object> objects,cv::Mat &frame);
     void morphFrame(cv::Mat &frame);
@@ -30,7 +33,7 @@ namespace tracking
     void doSHit(cv::Mat hsv,cv::Mat &frame);
     bool scanForMovement(cv::Mat hsv, cv::Mat frame, int rightmostBound);
     void LoadCascades();
-    void detectStopSigns(cv::Mat &frame);
+    bool detectStopSigns(cv::Mat &frame);
     void putText(std::string s,cv::Mat &frame);
 
 }

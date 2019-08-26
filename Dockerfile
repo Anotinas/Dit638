@@ -76,9 +76,7 @@ RUN cd /usr/src/googletest && \
 ADD . ../~/git/group_09 
 RUN cd ../~/git/group_09 && \
       cmake . && \
-      ls && \
-      echo after_cmake && \
+      echo chach &&\
     	make && \ 
-      ls && \
       ./runTests
 

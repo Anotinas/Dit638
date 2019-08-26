@@ -61,5 +61,15 @@ target_link_libraries(main ${OpenCV_LIBS})
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(runTests ${PROJECT_SOURCE_DIR}/src//TestProjects/test.cpp)
-target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
+file(GLOB TESTING
+    ${PROJECT_SOURCE_DIR}/src/cv/*.h
+    ${PROJECT_SOURCE_DIR}/src/cv/*.cpp
+    # ${PROJECT_SOURCE_DIR}/src/control/*.h
+    # ${PROJECT_SOURCE_DIR}/src/control/*.cpp
+    ${PROJECT_SOURCE_DIR}/src//TestProjects/*.cpp
+    ${PROJECT_SOURCE_DIR}/src//TestProjects/*.h
+    ${PROJECT_SOURCE_DIR}/src//TestProjects/GmockExample/*.cpp
+    ${PROJECT_SOURCE_DIR}/src//TestProjects/GmockExample/*.h
+)
+add_executable(runTests ${TESTING})
+target_link_libraries(runTests ${OpenCV_LIBS} ${GTEST_LIBRARIES} pthread)

@@ -18,7 +18,11 @@ cv::CascadeClassifier stopSignCascade;
 
 void tracking::LoadCascades()
 {
-    stopSignCascade.load("/Users/mokkants/Documents/workspace/cpp/car/src/cv/classifiers/Stopsign_HAAR_19Stages.xml");
+    char buffer[FILENAME_MAX];
+    getcwd(buffer, FILENAME_MAX);
+    std::string current_working_dir(buffer);
+    stopSignCascade.load(current_working_dir+ "/src/cv/classifiers/Stopsign_HAAR_19Stages.xml");
+    //printf(SSSS"Cascade has been loaded \n");
 }
 
 tracking::Object tracking::detectAtPosition(std::vector<tracking::Object> objects, int lowerBound,int upperBound)
@@ -152,8 +156,9 @@ bool tracking::scanForMovement(cv::Mat hsv, cv::Mat frame,int rightmostBound)
     return false;
 }
 
-void tracking::detectStopSigns(cv::Mat &frame)
+bool tracking::detectStopSigns(cv::Mat &frame)
 {
+    
     cv::putText(frame, "followMode", cv::Point(0,50), 1, 2, cv::Scalar(255,0,0));
     cv::Mat gray;
     cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
@@ -165,7 +170,13 @@ void tracking::detectStopSigns(cv::Mat &frame)
     if(stopSigns.size()>0)
     {
         cv::putText(frame, "thats", cv::Point(0,150), 1, 2, cv::Scalar(255,0,0));
+        return true;
     }
+    else
+    {
+        return false;
+    }
+    
 }
 
 void tracking::putText(std::string s,cv::Mat &frame)

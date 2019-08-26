@@ -9,12 +9,9 @@ cv::Mat frame, HSV;
 
 tracking::Object carAt9;
 
-
 tracking::Object carAt12;
 
-
 tracking::Object carAt3;
-
 
 int carsCount = 0;
 

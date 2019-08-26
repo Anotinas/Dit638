@@ -6,3 +6,5 @@
 #pragma once
 
 #include "gtest/gtest.h"
+#include "../cv/tracking.h"
+#include "../main.h"
