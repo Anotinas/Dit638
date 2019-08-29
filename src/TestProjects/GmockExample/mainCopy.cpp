@@ -1,4 +1,4 @@
-#include "main.h"
+#include "mainCopy.h"
 
 const int FRAME_WIDTH = 1200;
 const int FRAME_HEIGHT = 600;
@@ -9,12 +9,9 @@ cv::Mat frame, HSV;
 
 tracking::Object carAt9;
 
-
 tracking::Object carAt12;
 
-
 tracking::Object carAt3;
-
 
 int carsCount = 0;
 
@@ -35,7 +32,7 @@ void setMode(Mode m)
     }
 }
 
-int main()
+int mainFake()
 {
     //Instaniating carAt vars //added by David
     carAt3.position.x = -1;
@@ -104,13 +101,35 @@ void doIdle(cv::Mat &frame)
 
 void doFollow(cv::Mat &frame)
 {
-    tracking::detectStopSigns(frame);
+    bool stopsignDetected =tracking::detectStopSigns(frame);
     //             if Stopsign recognised
     //                 register stop sign 
     //             if stop sign registered && car not moving
     //                 enter Intersection mode
     //     else
     //         stop moving
+
+    //Test code
+    
+    CarHandlerv2 *CarHandler = getCarHandler();
+
+    float speed = 0.2;
+    while (mode==following && stopsignDetected)
+    {
+        float distanceReading = CarHandler->getFrontSensor();
+
+        if (distanceReading <= 0.45) speed -= 0.1;
+
+        if (distanceReading <= 0.225) speed -= 0.1;
+
+        if (distanceReading <= 0.1) speed = 0.0;
+                
+        CarHandler->setPedal(speed);
+        if(speed == 0){
+            mode = intersection;
+        }
+    }
+    
 }
 
 void doIntersection(cv::Mat hsv,cv::Mat &frame)
@@ -149,7 +168,7 @@ void setupIntersection()
     std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
     tracking::Object o;
 
-      if(carAt9.area < 1)
+    if(carAt9.area < 1)
     {
         o = tracking::detectCarAt9oclock(cars);
         if(o.area > 0)
@@ -184,4 +203,9 @@ void setupIntersection()
             carsCount++;
         }
     }
+}
+
+CarHandlerv2 * getCarHandler(){
+    CarHandlerv2 *carHandler = new CarImplementation();
+    return carHandler;
 }

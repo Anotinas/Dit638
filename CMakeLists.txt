@@ -71,5 +71,7 @@ file(GLOB TESTING
     ${PROJECT_SOURCE_DIR}/src//TestProjects/GmockExample/*.cpp
     ${PROJECT_SOURCE_DIR}/src//TestProjects/GmockExample/*.h
 )
+
 add_executable(runTests ${TESTING})
+add_dependencies(runTests messages.hpp)
 target_link_libraries(runTests ${OpenCV_LIBS} ${GTEST_LIBRARIES} pthread)
