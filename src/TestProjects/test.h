@@ -6,8 +6,7 @@
 #pragma once
 #include "gtest/gtest.h"
 #include "../cv/tracking.h"
-#include "../main.h"
 #include "memoryCheck.h"
 #include <thread>
-#include "GmockExample/mainFake.h"
+#include "GmockExample/mainCopy.h"
 #include "GmockExample/carHandler.h"
