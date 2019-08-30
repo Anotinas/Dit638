@@ -5,7 +5,7 @@
 
 enum Mode {idle,following, intersection};
 void doIdle(cv::Mat &frame);
-void doFollow(cv::Mat &frame, bool stopsignDetected);
+void doFollow(cv::Mat &frame, bool stopsignDetected, CarHandlerv2 *CarHandler);
 void doIntersection(cv::Mat hsv,cv::Mat &frame);
 void setupIntersection();
 void setMode(Mode m);

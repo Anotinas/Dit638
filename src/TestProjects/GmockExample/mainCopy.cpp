@@ -48,6 +48,7 @@ int mainFake()
     carAt12.area = -1;
 
     //instantiation complete
+    CarHandlerv2 *CarHandler = getCarHandler();
 
    tracking::LoadCascades();
     //Open camera
@@ -78,7 +79,7 @@ int mainFake()
                 doIdle(frame);
                 break;
             case following:
-                doFollow(frame, true);
+                doFollow(frame, true, CarHandler);
                 break; 
             case intersection:
                 doIntersection(HSV,frame);
@@ -100,7 +101,7 @@ void doIdle(cv::Mat &frame)
 }
 
 //I have to cheat on this one because something is wrong with detectStopsigns
-void doFollow(cv::Mat &frame, bool stopsignDetected)
+void doFollow(cv::Mat &frame, bool stopsignDetected,CarHandlerv2 *CarHandler)
 {
     //bool stopsignDetected =tracking::detectStopSigns(frame);
     //             if Stopsign recognised
@@ -110,7 +111,7 @@ void doFollow(cv::Mat &frame, bool stopsignDetected)
     //     else
     //         stop moving
     //Test code
-    CarHandlerv2 *CarHandler = getCarHandler();
+    //CarHandlerv2 *CarHandler = getCarHandler();
     
     if(!stopsignDetected){
        CarHandler->setPedal(0.0);

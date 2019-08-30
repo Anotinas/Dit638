@@ -167,10 +167,35 @@ TEST(ClassificationTest, DetectStopsignFalse){
 
 
 TEST(DrivingTest, NoStopSign){
+	carMock mockeryCar;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/mask.jpg");
+	tracking::LoadCascades();
 
+	using ::testing::Return;
+	EXPECT_CALL(mockeryCar, setPedal(0.0))
+	.Times(1)
+	.WillOnce(Return (true));
 
-
+	doFollow(frame, false, &mockeryCar);
 }
+TEST(DrivingTest, YesStopSign){
+	carMock mockeryCar;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/stopsign.jpg");
+	tracking::LoadCascades();
+
+	using ::testing::Return;
+
+	EXPECT_CALL(mockeryCar, setPedal(AtLeast(0.0)))
+	.Times(3)
+	.WillOnce(Return (true));
+	
+	EXPECT_CALL(mockeryCar, setPedal(0.0))
+	.Times(1)
+	.WillOnce(Return (true));
+
+	doFollow(frame, true, &mockeryCar);
+}
+
 
 
 TEST(Final, MemoryChecker){
