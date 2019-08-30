@@ -78,7 +78,7 @@ int mainFake()
                 doIdle(frame);
                 break;
             case following:
-                doFollow(frame);
+                doFollow(frame, true);
                 break; 
             case intersection:
                 doIntersection(HSV,frame);
@@ -99,20 +99,22 @@ void doIdle(cv::Mat &frame)
     setMode(intersection);
 }
 
-void doFollow(cv::Mat &frame)
+//I have to cheat on this one because something is wrong with detectStopsigns
+void doFollow(cv::Mat &frame, bool stopsignDetected)
 {
-    bool stopsignDetected =tracking::detectStopSigns(frame);
+    //bool stopsignDetected =tracking::detectStopSigns(frame);
     //             if Stopsign recognised
     //                 register stop sign 
     //             if stop sign registered && car not moving
     //                 enter Intersection mode
     //     else
     //         stop moving
-
     //Test code
-    
     CarHandlerv2 *CarHandler = getCarHandler();
-
+    
+    if(!stopsignDetected){
+       CarHandler->setPedal(0.0);
+    }
     float speed = 0.2;
     while (mode==following && stopsignDetected)
     {

@@ -72,6 +72,54 @@ TEST(RecognitionTest, Detect12CarTrue) {
 	ASSERT_TRUE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
 }
 
+TEST(RecognitionTest, Detect312CarTrue) {
+	cv::Mat HSV;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/CarCenterRight.png");
+	cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
+	std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+	tracking::Object o = detectCarAt12oclock(cars);
+	tracking::Object c = detectCarAt3oclock(cars);
+	memoryCheckCompilation();
+	ASSERT_TRUE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
+	ASSERT_TRUE(c.position.x != -1 && c.position.y !=-1 && c.area != -1);
+}
+
+TEST(RecognitionTest, Detect39CarTrue) {
+	cv::Mat HSV;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/CarLeftRight.png");
+	cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
+	std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+	tracking::Object o = detectCarAt9oclock(cars);
+	tracking::Object c = detectCarAt3oclock(cars);
+	memoryCheckCompilation();
+	ASSERT_TRUE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
+	ASSERT_TRUE(c.position.x != -1 && c.position.y !=-1 && c.area != -1);
+}
+TEST(RecognitionTest, Detect129CarTrue) {
+	cv::Mat HSV;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/CarLeftCenter.png");
+	cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
+	std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+	tracking::Object o = detectCarAt9oclock(cars);
+	tracking::Object c = detectCarAt12oclock(cars);
+	memoryCheckCompilation();
+	ASSERT_TRUE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
+	ASSERT_TRUE(c.position.x != -1 && c.position.y !=-1 && c.area != -1);
+}
+TEST(RecognitionTest, DetectAllCarTrue) {
+	cv::Mat HSV;
+	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/CarAllPos.png");
+	cv::cvtColor(frame,HSV,cv::COLOR_BGR2HSV);
+	std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+	tracking::Object v = detectCarAt3oclock(cars);
+	tracking::Object o = detectCarAt9oclock(cars);
+	tracking::Object c = detectCarAt12oclock(cars);
+	memoryCheckCompilation();
+	ASSERT_TRUE(v.position.x != -1 && v.position.y !=-1 && v.area != -1);
+	ASSERT_TRUE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
+	ASSERT_TRUE(c.position.x != -1 && c.position.y !=-1 && c.area != -1);
+}
+
 TEST(RecognitionTest, Detect12CarFalse) {
 	cv::Mat HSV;
 	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/mask.jpg");
@@ -102,16 +150,28 @@ TEST(RecognitionTest, Detect3CarFalse) {
 	ASSERT_FALSE(o.position.x != -1 && o.position.y !=-1 && o.area != -1);
 }
 
+
 TEST(ClassificationTest, DetectStopsignTrue){
+
 	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/stopSign.png");
+    tracking::LoadCascades();
 	memoryCheckCompilation();
 	ASSERT_TRUE(tracking::detectStopSigns(frame));
 }
 TEST(ClassificationTest, DetectStopsignFalse){
 	cv::Mat frame = cv::imread(sourceDirectory+"/TestProjects/Assets/mask.jpg");
+	tracking::LoadCascades();
 	memoryCheckCompilation();
 	ASSERT_FALSE(tracking::detectStopSigns(frame));
 }
+
+
+TEST(DrivingTest, NoStopSign){
+
+
+
+}
+
 
 TEST(Final, MemoryChecker){
 	std::cout << "Times the physical threshold has broken: " << pThresholdBrokenAmount<<"\n";
@@ -125,6 +185,7 @@ int main(int argc, char **argv) {
 	sourceDirectory = "/~/git/group_09/src";
 	tracking::LoadCascades();
 	testing::InitGoogleTest(&argc, argv);
+	testing::InitGoogleMock(&argc, argv);
 	//std::thread memoryChecker (memoryCheckCompilation);
 	//memoryChecker.join();
 	return RUN_ALL_TESTS();
