@@ -5,7 +5,7 @@
 
 #pragma once
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
+#include <gmock/gmock.h>
 #include "../cv/tracking.h"
 #include "memoryCheck.h"
 #include <thread>

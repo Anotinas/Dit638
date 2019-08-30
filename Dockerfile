@@ -21,7 +21,7 @@ RUN apt-get update \
         g++ \
         make \
         ca-certificates \
-        libgtest-dev \
+#        libgtest-dev \
         software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
@@ -67,11 +67,13 @@ RUN ln -s \
 #Here is the stuff added in by David.  
 #Building googletest
 
-RUN cd /usr/src/googletest && \
-    cmake . && \
-    cmake --build . --target install
+#RUN cd /usr/src/googletest && \
+#    cmake . && \
+#    cmake --build . --target install
 
-
+RUN cd /usr/local/lib && \
+    ls && \
+    ls
 #Building the project
 ADD . ../~/git/group_09 
 RUN cd ../~/git/group_09 && \

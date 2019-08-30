@@ -35,7 +35,7 @@ class CarHandler {
 
 class CarHandlerv2{
     public:
-    virtual ~CarHandlerv2(){};
+    //virtual ~CarHandlerv2(){};
     virtual bool setPedal(float pedal) = 0;
     virtual bool setDir(float dir) = 0;
     virtual float getFrontSensor() = 0;
