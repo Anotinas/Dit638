@@ -10,33 +10,26 @@ int ParseLine(char* line){
 	return i;
 }
 //Used to get the amount of Virtual memory used by current process
-int getVMemory(){
-	FILE* file =fopen("/proc/self/status",  "r");
-	int result = -1;
-	char line[128];
-	while(fgets(line, 128, file)!=NULL){
-		if(strncmp(line, "VmSize:",7) == 0){
-			result = ParseLine(line);
-			break;
-		}
-	}
-	fclose(file);
-	return result;
+long long getVMemory(){
+	struct sysinfo memInfo;
 
+    sysinfo (&memInfo);
+
+    long long virtualMemUsed = memInfo.totalram - memInfo.freeram;
+    virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
+    virtualMemUsed *= memInfo.mem_unit;
+    return virtualMemUsed;
 }
 //Used to get the amount of physical memory used by the process
-int getPMemory(){
-	FILE* file =fopen("/proc/self/status",  "r");
-	int result = -1;
-	char line[128];
-	while(fgets(line, 128, file)!=NULL){
-		if(strncmp(line, "VmRSS:",6) == 0){
-			result = ParseLine(line);
-			break;
-		}
-	}
-	fclose(file);
-	return result;
+long long getPMemory(){
+    //This get the
+    struct sysinfo memInfo;
+
+    sysinfo (&memInfo);
+
+    long long totalPhysicalMem = memInfo.totalram -memInfo.freeram;
+    totalPhysicalMem *= memInfo.mem_unit;
+    return totalPhysicalMem;
 }
 
 //The following functions and values are used to get the CPU currently used by the process.

@@ -2,26 +2,32 @@
 
 std::string sourceDirectory;
 bool memoryShouldBeChecked = true;
-int ePmem = 40;
-int eVmem = 40;
-
-//Testing
+long long ePmem = 1900000000;
+long long eVmem = 2835000000;
+int pMemThresholdBroke = 0;
+int vMemThresholdBroke = 0;
 std::ofstream file;
 
 
 void memoryCheckCompilation(){
-	//std::ofstream file;
-	//file.open((sourceDirectory+"/TestProjects/MemoryInformation/TestMemoryInfo.txt"));
 	bool debug = true;
 	
 	while(memoryShouldBeChecked){
-	int vmem = getVMemory();
-	int pmem = getPMemory();
-	if(eVmem!=-1){
+	long long vmem = getVMemory();
+	long long pmem = getPMemory();
+	//printf("here is vmem: %lld \n", vmem);
+	//printf("here is pmem: %lld \n", pmem);
+	/*if(eVmem!=-1){
 		EXPECT_TRUE(eVmem>vmem);
 	}
 	if(ePmem!=-1){
 		EXPECT_TRUE(ePmem> pmem);
+	}*/
+	if(eVmem <vmem){
+		vMemThresholdBroke++;
+	}
+	if(ePmem <pmem){
+		pMemThresholdBroke++;
 	}
 	if(debug){
 		std::string  vmemChar, pmemChar, lineChar;
@@ -313,6 +319,11 @@ TEST(DrivingTest, intersection2Car){
 
 }
 
+TEST(Final, MemoryBroke){
+	printf("Virtual memory: %i : Physichal Memory: %i \n", vMemThresholdBroke, pMemThresholdBroke);
+	ASSERT_EQ(vMemThresholdBroke, 0);
+	ASSERT_EQ(pMemThresholdBroke, 0);
+}
 int main(int argc, char **argv) {
 	sourceDirectory = "/~/git/group_09/src";
 	tracking::LoadCascades();

@@ -12,7 +12,7 @@
 #include "sys/vtimes.h"
 
 
-    int getPMemory();
-    int getVMemory();
+    long long getPMemory();
+    long long getVMemory();
     void init();
     double getCPUValue();
