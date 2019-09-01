@@ -2,8 +2,6 @@
 
 std::string sourceDirectory;
 bool memoryShouldBeChecked = true;
-int ePmem = 40;
-int eVmem = 40;
 
 //Testing
 std::ofstream file;
@@ -17,13 +15,6 @@ void memoryCheckCompilation(){
 	while(memoryShouldBeChecked){
 	int vmem = getVMemory();
 	int pmem = getPMemory();
-	if(eVmem!=-1){
-		EXPECT_TRUE(eVmem>vmem);
-	}
-	if(ePmem!=-1){
-		EXPECT_TRUE(ePmem> pmem);
-	}
-	if(debug){
 		std::string  vmemChar, pmemChar, lineChar;
 		vmemChar =  "Virtual memory used: " + std::to_string(vmem);
 		pmemChar = " Physical memory used: "+ std::to_string(pmem);
@@ -33,7 +24,6 @@ void memoryCheckCompilation(){
 		file << "\n";
 		file << pmemChar;
 		file << "\n";
-	}
 	}
 	file.close();
 }
