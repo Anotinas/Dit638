@@ -71,14 +71,15 @@ RUN ln -s \
 #    cmake . && \
 #    cmake --build . --target install
 
-RUN cd /usr/local/lib && \
-    ls && \
-    ls
+#RUN cd /usr/local/lib && \
+#    ls && \
+#    ls
 #Building the project
 ADD . ../~/git/group_09 
 RUN cd ../~/git/group_09 && \
       cmake . && \
-      echo chach &&\
     	make && \ 
       ./runTests
+RUN cd ../~/git/group_09/src/TestProjects/MemoryInformation && \
+    ls
 

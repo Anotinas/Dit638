@@ -13,10 +13,10 @@ tracking::Object carAt12;
 
 tracking::Object carAt3;
 
-int carsCount = 0;
-
 bool calibrationEnabled = false;
 Mode mode = idle;
+
+int carsCount = 0;
 
 void setMode(Mode m)
 {
@@ -25,7 +25,7 @@ void setMode(Mode m)
     {
         case intersection:
             for(int i = 0; i < 500; i++)
-            setupIntersection();
+            setupIntersection(HSV, frame);
             break;
         default:
             break;
@@ -82,7 +82,7 @@ int mainFake()
                 doFollow(frame, true, CarHandler);
                 break; 
             case intersection:
-                doIntersection(HSV,frame);
+                doIntersection(HSV,frame, CarHandler);
                 break;
         }
         //show frames 
@@ -117,7 +117,7 @@ void doFollow(cv::Mat &frame, bool stopsignDetected,CarHandlerv2 *CarHandler)
        CarHandler->setPedal(0.0);
     }
     float speed = 0.2;
-    while (mode==following && stopsignDetected)
+    while (stopsignDetected)
     {
         float distanceReading = CarHandler->getFrontSensor();
 
@@ -127,15 +127,15 @@ void doFollow(cv::Mat &frame, bool stopsignDetected,CarHandlerv2 *CarHandler)
 
         if (distanceReading <= 0.1) speed = 0.0;
                 
-        CarHandler->setPedal(speed);
-        if(speed == 0){
+        if(CarHandler->setPedal(speed) &&speed == 0){
             mode = intersection;
+            stopsignDetected = false;
         }
     }
     
 }
 
-void doIntersection(cv::Mat hsv,cv::Mat &frame)
+void doIntersection(cv::Mat hsv,cv::Mat &frame, CarHandlerv2 *CarHandler)
 {
     //Roll up to stop line
     //     await given direction
@@ -143,10 +143,17 @@ void doIntersection(cv::Mat hsv,cv::Mat &frame)
     //             refuse()
     //Determine 12 o clock car position if we detected one earlier
     
-    if(carsCount > 0)
+    //Hardcoded moving to the intersection line
+    CarHandler->setPedal(0.1);
+    usleep(1507);
+    CarHandler->setPedal(0.0);
+
+
+    while(carsCount > 0)
     {
     tracking::putText(std::to_string(carsCount), frame);
         //  if car detected passing by
+        CarHandler->getFrontSensor();
         bool carHasPassed = carAt12.area > 1 ?
             tracking::scanForMovement(hsv,frame,carAt12.position.x)
             :
@@ -156,19 +163,29 @@ void doIntersection(cv::Mat hsv,cv::Mat &frame)
             carsCount--;
         }
     }
-    else
-    {
     tracking::putText("Time to vroom", frame);
-    }
 
-    //     move / turn in given direction
+    //Drive past the intersection
+    CarHandler->setPedal(0.2);
+    //for(int i = 0; i<150; i++){
+    for(int i = 0; i<10; i++){
+        if(1.0>CarHandler->getFrontSensor() || i==149){
+                CarHandler->setPedal(0.0);
+        }
+        else{
+            usleep(100);
+        }
+    }
+    
+    
+
     //enter standby mode
 }
 
-void setupIntersection()
+void setupIntersection(cv::Mat hsv, cv::Mat &frame)
 {
     //Get cars from frame
-    std::vector<tracking::Object> cars = tracking::detectObjects(HSV,frame);
+    std::vector<tracking::Object> cars = tracking::detectObjects(hsv,frame);
     tracking::Object o;
 
     if(carAt9.area < 1)
